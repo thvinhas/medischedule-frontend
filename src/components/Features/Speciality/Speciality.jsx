@@ -1,8 +1,7 @@
-import { Container, Row } from "react-bootstrap";
-import Header from "./Header";
-import { useState } from "react";
-import Griddle, { plugins } from "griddle-react";
+import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
+import axios from "axios";
+import { fetchServices } from "./services/SpecialityService";
 
 const columns = [
   {
@@ -34,12 +33,23 @@ const specialites = [
 ];
 
 const Specialty = () => {
-  const [data, useData] = useState(specialites);
+  const [specialites, setSpecialites] = useState([]);
+  useEffect(() => {
+    const getSpecialites = async () => {
+      try {
+        let response = await fetchServices();
+        setSpecialites(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getSpecialites();
+  }, []);
   return (
     <>
       <div className="page">
         <h1>Specialites</h1>
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={specialites} />
       </div>
     </>
   );

@@ -1,8 +1,10 @@
 import { Container, Row } from "react-bootstrap";
-import Header from "../Header";
-import { useState } from "react";
+import Header from "../../Header";
+import { useEffect, useState } from "react";
 import Griddle, { plugins } from "griddle-react";
 import DataTable from "react-data-table-component";
+import axios from "axios";
+import { fetchInsurances } from "./services/InsuranceService";
 
 const columns = [
   {
@@ -17,31 +19,28 @@ const columns = [
   },
 ];
 
-// TODO add this to be get by the server
-const insurances = [
-  {
-    id: 1,
-    name: "VHI",
-  },
-  {
-    id: 2,
-    name: "Irish Life",
-  },
-  {
-    id: 3,
-    name: "AIB",
-  },
-];
-
 const Insurance = () => {
-  const [data, useData] = useState(insurances);
+  const [insurances, setInsurances] = useState([]);
+
+  useEffect(() => {
+    const getInsurances = async () => {
+      try {
+        let response = await fetchInsurances();
+        setInsurances(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getInsurances();
+  }, []);
+
   return (
     <>
       <div className="page">
         <div className="header">
           <h1>Insurances</h1>
         </div>
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={insurances} />
       </div>
     </>
   );

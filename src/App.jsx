@@ -1,11 +1,11 @@
 // import "./App.css";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Home from "./components/Home";
-import Insurance from "./components/Insurances/Inusrance";
+import Insurance from "./components/Features/Insurances/InsurancePage";
+import Specialty from "./components/Features/Speciality/Speciality";
+import Patient from "./components/Features/Patients/Patient";
+import Hospital from "./components/Features/Hospitals/HospitalPage";
 import Header from "./components/Header";
-import Specialty from "./components/Speciality";
-import Hospital from "./components/Hospital";
-import Patient from "./components/Patient";
 
 function App() {
   return (
