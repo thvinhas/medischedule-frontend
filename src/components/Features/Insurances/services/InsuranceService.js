@@ -9,3 +9,36 @@ export const fetchInsurances = async () => {
     throw error;
   }
 };
+
+export const addInsurance = async (formData) => {
+  try {
+    await api.post("/insurances", formData).then((response) => {
+      window.location.reload();
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const deleteInsurance = async (id) => {
+  try {
+    await api.delete(`/insurances/${id}`).then((response) => {
+      window.location.reload();
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const editInsurance = async (id, formData) => {
+  try {
+    await api.put(`/insurances/${id}`, formData).then((response) => {
+      window.location.reload();
+    });
+  } catch (error) {
+    console.error(error);
+    throw new Error(error);
+  }
+};
