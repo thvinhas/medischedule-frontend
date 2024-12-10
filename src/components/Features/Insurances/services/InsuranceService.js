@@ -32,7 +32,7 @@ export const deleteInsurance = async (id) => {
   }
 };
 
-export const editInsurance = async (id, formData) => {
+export const updateInsurance = async (id, formData) => {
   try {
     await api.put(`/insurances/${id}`, formData).then((response) => {
       window.location.reload();

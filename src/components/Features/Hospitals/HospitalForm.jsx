@@ -1,39 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import { addInsurance } from "./services/InsuranceService";
+import { addHospitals, updateHospitals } from "./services/HospitalSerive";
 
-const AddInsurance = ({ show, handleClose }) => {
+const HospitalForm = ({ show, handleClose, selectedValue }) => {
   const [formData, setFormData] = useState({ name: "" });
+
+  useEffect(() => {
+    console.log(selectedValue);
+    if (selectedValue) {
+      setFormData(selectedValue);
+    } else {
+      setFormData({ name: "" });
+    }
+  }, [selectedValue]);
 
   const handleChange = (e) => {
     let { name, value } = e.target;
-    console.log(name);
-    setFormData({ [name]: value });
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      let response = addInsurance(formData);
-      console.log(response);
+      let response = selectedValue
+        ? updateHospitals(selectedValue.id, formData)
+        : addHospitals(formData);
     } catch (error) {
-      nsole.error(error);
+      console.error(error);
     }
   };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Add Insurance</Modal.Title>
+        <Modal.Title>Add Patient</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
           <Form.Group className="mb-3">
-            <Form.Label>Insurance Name</Form.Label>
+            <Form.Label>Specialty</Form.Label>
             <Form.Control
               type="text"
               placeholder="Name"
               autoFocus
               name="name"
+              value={formData.name}
               onChange={handleChange}
             />
           </Form.Group>
@@ -51,4 +63,4 @@ const AddInsurance = ({ show, handleClose }) => {
   );
 };
 
-export default AddInsurance;
+export default HospitalForm;

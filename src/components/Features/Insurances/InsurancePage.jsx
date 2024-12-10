@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import { deleteInsurance, fetchInsurances } from "./services/InsuranceService";
-import AddInsurance from "./AddInsurance";
-import EditInsurace from "./EditInsurance";
+import AddInsurance from "./insuranceForm";
 
 const Insurance = () => {
   const columns = [
@@ -33,15 +32,14 @@ const Insurance = () => {
     },
   ];
   const [insurances, setInsurances] = useState([]);
-  const [showAdd, setShowAdd] = useState(false);
-  const [showEdit, setShowEdit] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [selectedInsurance, setSelectedInsurance] = useState(null);
 
   const handleClose = () => {
-    setShowAdd(false);
-    setShowEdit(false);
+    setSelectedInsurance(null);
+    setShowModal(false);
   };
-  const handleShowAdd = () => setShowAdd(true);
+
   const handleDelete = async (id) => {
     if (window.confirm("Do you want delete this")) {
       try {
@@ -51,9 +49,10 @@ const Insurance = () => {
       }
     }
   };
+
   const handeEdit = (insurance) => {
     setSelectedInsurance(insurance);
-    setShowEdit(true);
+    setShowModal(true);
   };
 
   useEffect(() => {
@@ -73,20 +72,17 @@ const Insurance = () => {
       <div className="page">
         <div className="header">
           <h1>Insurances</h1>
-          <Button variant="primary" onClick={handleShowAdd}>
+          <Button variant="primary" onClick={() => setShowModal(true)}>
             Create a new Insurance
           </Button>
         </div>
         <DataTable columns={columns} data={insurances} />
       </div>
-      <AddInsurance show={showAdd} handleClose={handleClose} />
-      {selectedInsurance && showEdit && (
-        <EditInsurace
-          show={showEdit}
-          handleClose={handleClose}
-          selectedValue={selectedInsurance}
-        />
-      )}
+      <AddInsurance
+        show={showModal}
+        handleClose={handleClose}
+        selectedValue={selectedInsurance}
+      />
     </>
   );
 };
