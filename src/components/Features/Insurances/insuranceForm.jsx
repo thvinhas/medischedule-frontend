@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { addInsurance, updateInsurance } from "./services/InsuranceService";
 import Insurance from "./InsurancePage";
+import { useDispatch } from "react-redux";
 
 const AddInsurance = ({ show, handleClose, selectedValue }) => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({ name: "" });
   let modalTitle = selectedValue ? "Edit" : "Add";
 
@@ -17,7 +19,6 @@ const AddInsurance = ({ show, handleClose, selectedValue }) => {
 
   const handleChange = (e) => {
     let { name, value } = e.target;
-
     setFormData(...formdata, { [name]: value });
   };
 

@@ -4,6 +4,7 @@ import DataTable from "react-data-table-component";
 
 import { deleteInsurance, fetchInsurances } from "./services/InsuranceService";
 import AddInsurance from "./insuranceForm";
+import { useDispatch, useSelector } from "react-redux";
 
 const Insurance = () => {
   const columns = [
@@ -31,7 +32,9 @@ const Insurance = () => {
       ),
     },
   ];
-  const [insurances, setInsurances] = useState([]);
+
+  const dispatch = useDispatch();
+  const { insurances, status, error } = useSelector((state) => state.insurance);
   const [showModal, setShowModal] = useState(false);
   const [selectedInsurance, setSelectedInsurance] = useState(null);
 
@@ -56,16 +59,10 @@ const Insurance = () => {
   };
 
   useEffect(() => {
-    const getInsurances = async () => {
-      try {
-        let response = await fetchInsurances();
-        setInsurances(response);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getInsurances();
-  }, []);
+    if (status === "idle") {
+      dispatch(fetchInsurances());
+    }
+  }, [dispatch, status]);
 
   return (
     <>
