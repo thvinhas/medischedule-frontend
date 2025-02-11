@@ -2,10 +2,9 @@ import { Button, Container, Row } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
-import { deleteInsurance } from "./services/InsuranceService";
 import AddInsurance from "./insuranceForm";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchInsurances, insuranceAdded } from "./InsuranceSlice";
+import { fetchInsurances, deleteInsurance } from "./InsuranceSlice";
 
 const Insurance = () => {
   const columns = [
@@ -45,12 +44,11 @@ const Insurance = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Do you want delete this")) {
-      try {
-        await deleteInsurance(id);
-      } catch (error) {
-        console.log(error);
-      }
+    if (window.confirm("Do you want to delete this?")) {
+      dispatch(deleteInsurance(id))
+        .unwrap()
+        .then(() => alert("Insurance deleted successfully!"))
+        .catch((error) => console.error("Error deleting insurance:", error));
     }
   };
 

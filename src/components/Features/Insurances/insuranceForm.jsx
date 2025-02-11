@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import { addInsurance, updateInsurance } from "./services/InsuranceService";
 import { useDispatch } from "react-redux";
-import { insuranceAdded } from "./InsuranceSlice";
+import { addInsurance, updateInsurance } from "./InsuranceSlice";
 
 const AddInsurance = ({ show, handleClose, selectedValue }) => {
   const dispatch = useDispatch();
@@ -23,21 +22,23 @@ const AddInsurance = ({ show, handleClose, selectedValue }) => {
     if (!name.trim()) return; // Prevent empty submissions
 
     if (selectedValue) {
-      // Edit mode
-      dispatch(
-        insuranceUpdated({
-          id: selectedValue.id,
-          name: name,
+      e.preventDefault();
+      dispatch(updateInsurance({ id: selectedValue.id, name }))
+        .unwrap()
+        .then(() => {
+          alert("Insurance updated successfully!");
+          handleClose();
         })
-      );
+        .catch((error) => console.error("Error updating insurance:", error));
     } else {
       // Add mode
-      dispatch(
-        insuranceAdded({
-          id: Date.now(), // Temporary ID
-          name: name,
+      dispatch(addInsurance({ name }))
+        .unwrap()
+        .then(() => {
+          alert("Insurance updated successfully!");
+          handleClose();
         })
-      );
+        .catch((error) => console.error("Error updating insurance:", error));
     }
 
     setName(""); // Clear input

@@ -1,11 +1,33 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../../api";
+import { actions } from "griddle-react";
 
 export const fetchInsurances = createAsyncThunk("fetchInsurance", async () => {
   const response = await api.get("/insurances");
-  // console.log("API Response:", response.data.data);
   return response.data.data;
 });
+export const addInsurance = createAsyncThunk(
+  "addInsurance",
+  async (insuranceData) => {
+    const response = await api.post("/insurances", insuranceData);
+    return response.data;
+  }
+);
+export const updateInsurance = createAsyncThunk(
+  "updateInsurance",
+  async ({ id, name }) => {
+    const response = await api.put(`/insurances/${id}`, { name }); // Send update request
+    return response.data;
+  }
+);
+
+export const deleteInsurance = createAsyncThunk(
+  "deleteInsurance",
+  async (id) => {
+    await api.delete(`/insurances/${id}`);
+    return id; // Return deleted insurance ID
+  }
+);
 
 const insuranceSlice = createSlice({
   name: "Insurances",
@@ -14,29 +36,7 @@ const insuranceSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {
-    insuranceAdded(state, action) {
-      state.insurances.push(action.payload);
-    },
-    insuranceUpdated(state, action) {
-      const { id, name } = action.payload;
-      const existingInsurance = state.insurances.find(
-        (insurance) => insurance.id === id
-      );
-      if (existingInsurance) {
-        existingInsurance.name = name;
-      }
-    },
-    inusraceDeleted(state, action) {
-      const { id } = action.payload;
-      const existingInsurance = state.insurances.find(
-        (insurance) => insurance.id == id
-      );
-      if (existingInsurance) {
-        return state.filter((user) => user.id !== id.id);
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchInsurances.pending, (state) => {
@@ -48,6 +48,31 @@ const insuranceSlice = createSlice({
       })
       .addCase(fetchInsurances.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(addInsurance.fulfilled, (state, action) => {
+        state.insurances.push(action.payload);
+      })
+      .addCase(addInsurance.rejected, (state, action) => {
+        state.error = action.error.message;
+      })
+      .addCase(updateInsurance.fulfilled, (state, action) => {
+        const index = state.insurances.findIndex(
+          (insurance) => insurance.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.insurances[index] = action.payload; // Update Redux state
+        }
+      })
+      .addCase(updateInsurance.rejected, (state, action) => {
+        state.error = action.error.message;
+      })
+      .addCase(deleteInsurance.fulfilled, (state, action) => {
+        state.insurances = state.insurances.filter(
+          (insurance) => insurance.id !== action.payload
+        );
+      })
+      .addCase(deleteInsurance.rejected, (state, action) => {
         state.error = action.error.message;
       });
   },
