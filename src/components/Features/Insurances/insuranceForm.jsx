@@ -1,37 +1,47 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { addInsurance, updateInsurance } from "./services/InsuranceService";
-import Insurance from "./InsurancePage";
+import { useDispatch } from "react-redux";
+import { insuranceAdded } from "./InsuranceSlice";
 
 const AddInsurance = ({ show, handleClose, selectedValue }) => {
-  const [formData, setFormData] = useState({ name: "" });
+  const dispatch = useDispatch();
+  const [name, setName] = useState("");
   let modalTitle = selectedValue ? "Edit" : "Add";
 
   useEffect(() => {
     if (selectedValue) {
-      setFormData(selectedValue);
+      setName(selectedValue.name);
     } else {
-      setFormData({ name: "" });
+      setName("");
     }
   }, [selectedValue]);
-
-  const handleChange = (e) => {
-    let { name, value } = e.target;
-
-    setFormData(...formdata, { [name]: value });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      let response = selectedValue
-        ? updateInsurance(selectedValue.id, formData)
-        : addInsurance(formData);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
+    if (!name.trim()) return; // Prevent empty submissions
+
+    if (selectedValue) {
+      // Edit mode
+      dispatch(
+        insuranceUpdated({
+          id: selectedValue.id,
+          name: name,
+        })
+      );
+    } else {
+      // Add mode
+      dispatch(
+        insuranceAdded({
+          id: Date.now(), // Temporary ID
+          name: name,
+        })
+      );
     }
+
+    setName(""); // Clear input
+    handleClose(); // Close modal after adding/editing
   };
   return (
     <Modal show={show} onHide={handleClose}>
@@ -47,8 +57,8 @@ const AddInsurance = ({ show, handleClose, selectedValue }) => {
               placeholder="Name"
               autoFocus
               name="name"
-              value={formData.name}
-              onChange={handleChange}
+              value={name || ""}
+              onChange={(e) => setName(e.target.value)}
             />
           </Form.Group>
         </Modal.Body>

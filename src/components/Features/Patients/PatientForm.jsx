@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import { fetchInsurances } from "../Insurances/services/InsuranceService";
+// import { fetchInsurances } from "../Insurances/services/InsuranceService";
 import { addPatient, updatePatient } from "./services/PatientService";
 
 const PatientForm = ({ show, handleClose, selectedValue }) => {

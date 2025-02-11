@@ -2,8 +2,10 @@ import { Button, Container, Row } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
-import { deleteInsurance, fetchInsurances } from "./services/InsuranceService";
+import { deleteInsurance } from "./services/InsuranceService";
 import AddInsurance from "./insuranceForm";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchInsurances, insuranceAdded } from "./InsuranceSlice";
 
 const Insurance = () => {
   const columns = [
@@ -31,7 +33,9 @@ const Insurance = () => {
       ),
     },
   ];
-  const [insurances, setInsurances] = useState([]);
+  const dispatch = useDispatch();
+  const insurances = useSelector((state) => state.insurances.insurances);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedInsurance, setSelectedInsurance] = useState(null);
 
@@ -56,16 +60,8 @@ const Insurance = () => {
   };
 
   useEffect(() => {
-    const getInsurances = async () => {
-      try {
-        let response = await fetchInsurances();
-        setInsurances(response);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getInsurances();
-  }, []);
+    dispatch(fetchInsurances());
+  }, [dispatch]);
 
   return (
     <>
